@@ -1,0 +1,14 @@
+/* nearby neighborhoods */
+area[name="Portland"][admin_level=8]->.city;
+area[name="Oregon"][admin_level=4]->.state;
+rel
+  [name="{0}"]
+  [admin_level=10]
+(area.state)(area.city)->.nhood;
+rel
+  [name!~"${0}^"]
+  [admin_level=10]
+(area.state)(area.city)->.other_nhoods;
+(
+  rel.other_nhoods(around.nhood:0);
+);

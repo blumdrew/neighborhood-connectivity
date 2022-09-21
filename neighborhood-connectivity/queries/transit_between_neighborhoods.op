@@ -1,0 +1,30 @@
+/* transit between neighborhoods */
+area[name="Portland"][admin_level=8]->.city;
+area[name="Oregon"][admin_level=4]->.state;
+area[name="Portsmouth"][admin_level=10](area.state)(area.city)->.nhood1_area;
+area[name="Saint Johns"][admin_level=10](area.state)(area.city)->.nhood2_area;
+rel
+  [name="Portsmouth"]
+  [admin_level=10]
+(area.state)(area.city)->.nhood1;
+rel
+  [name="Saint Johns"]
+  [admin_level=10]
+(area.state)(area.city)->.nhood2;
+.nhood1>->.nhood1;
+.nhood2>->.nhood2;
+/* public transport - needs to pass thru both neighborhoods, and have a stop in both */
+rel[route~"^(bus|light_rail)$"](area.nhood1_area)(area.nhood2_area)->.pt;
+.pt>->.pt_stops;
+(
+  nwr.pt_stops[public_transport=platform];
+)->.pt_stops;
+(
+  nwr.pt_stops(around.nhood1:25);
+  nwr.pt_stops(around.nhood2:25);
+  nwr.pt_stops(area.nhood1_area);
+  nwr.pt_stops(area.nhood2_area);
+)->.stops;
+.stops<<->.routes;
+nwr.routes(area.nhood1_area)(area.nhood2_area);
+out geom;
