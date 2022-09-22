@@ -5,15 +5,23 @@ rel
   [name="{0}"]
   [admin_level=10]
 (area.state)(area.city)->.nhood1;
+area
+  [name="{0}"]
+  [admin_level=10]
+(area.state)(area.city)->.area_nhood1;
 rel
   [name="{1}"]
   [admin_level=10]
 (area.state)(area.city)->.nhood2;
+area
+  [name="{1}"]
+  [admin_level=10]
+(area.state)(area.city)->.area_nhood2;
 .nhood1>->.nhood1;
 .nhood2>->.nhood2;
 way.nhood1.nhood2->.boundary;
 /* roads, paths, etc. */
 way
   [highway~""]
-  [footway!~"sidewalk"]
-(around.boundary:1);
+  [footway!~"^(sidewalk|crossing)$"]
+(around.boundary:1)(area.area_nhood1)(area.area_nhood2);
